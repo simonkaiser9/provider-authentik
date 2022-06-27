@@ -5,18 +5,18 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: mytypes.sample.template.crossplane.io
+  name: users.user.authentik.crossplane.io
 spec:
-  group: sample.template.crossplane.io
+  group: user.authentik.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - template
-    kind: MyType
-    listKind: MyTypeList
-    plural: mytypes
-    singular: mytype
+    kind: User
+    listKind: UserList
+    plural: users
+    singular: user
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -35,7 +35,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: A MyType is an example API type.
+        description: A User is an example API type.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -50,7 +50,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: A MyTypeSpec defines the desired state of a MyType.
+            description: A UserSpec defines the desired state of a User.
             properties:
               deletionPolicy:
                 default: Delete
@@ -62,12 +62,36 @@ spec:
                 - Delete
                 type: string
               forProvider:
-                description: MyTypeParameters are the configurable fields of a MyType.
+                description: UserParameters are the configurable fields of a User.
                 properties:
-                  configurableField:
+                  email:
+                    description: mail of the user
+                    type: string
+                  groups:
+                    description: Array of group uuids the user is a member of
+                    items:
+                      type: string
+                    type: array
+                  is_active:
+                    description: Designates, whether this user should be treated as
+                      active. Unselect this instead of deleting accounts.
+                    type: boolean
+                  last_login:
+                    description: Last login timestamp or null
+                    type: string
+                  name:
+                    description: name of the user. Required
+                    type: string
+                  path:
+                    description: path
+                    type: string
+                  username:
+                    description: user ID. Required
                     type: string
                 required:
-                - configurableField
+                - groups
+                - name
+                - username
                 type: object
               providerConfigRef:
                 default:
@@ -166,13 +190,25 @@ spec:
             - forProvider
             type: object
           status:
-            description: A MyTypeStatus represents the observed state of a MyType.
+            description: A UserStatus represents the observed state of a User.
             properties:
               atProvider:
-                description: MyTypeObservation are the observable fields of a MyType.
+                description: UserObservation are the observable fields of a User.
                 properties:
-                  observableField:
+                  avatar:
                     type: string
+                  is_superuser:
+                    description: Designates, whether this user is a super user
+                    type: boolean
+                  pk:
+                    type: string
+                  uid:
+                    type: string
+                required:
+                - avatar
+                - is_superuser
+                - pk
+                - uid
                 type: object
               conditions:
                 description: Conditions of the resource.
